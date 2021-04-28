@@ -80,12 +80,16 @@ Run the laravel development server
 
     npm start
 
+# Q&A
 
-Request headers
+ What if instead of 100 transactions, the system was expected to convert 10,000 transactions tomorrow?
 
-| **Required** 	| **Key**              	| **Value**            	|
-|----------	|------------------	|------------------	|
-| Yes      	| Content-Type     	| application/json 	|   	|
+    There are many ways to ensure our system is reliable. One of the methods I would consider is to use RabbitMQ for the transactions.
+    
+    RabbitMQ offers a variety of features to let you trade off performance with reliability, including persistence, delivery acknowledgements, publisher confirms,     and high availability.
+    
+    For one of the projects we are working on, we had the challenge of downloading the orders to the ERP and to make sure that this process ends correctly, we         decided to use it.
 
+    What we did was use the event ‘checkout_onepage_controller_success_action’ to capture the order once finished and send a message with the ‘entity_id’ of the       order to RabbitMQ, in this way our consumers are responsible for reading the queues of RabbitMQ and are responsible for executing the code that downloads the     order to the ERP.
 
 ----------
