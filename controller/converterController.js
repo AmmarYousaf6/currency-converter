@@ -29,8 +29,7 @@ const getTransactions = async (req,res) => {
     //Call Transactions api
     let transactionApi = Array(100).fill(process.env.GET_TRANSACTIONS);
 
-        const urls = transactionApi;
-    const promises = urls.map(url => request(url));
+    const promises = transactionApi.map(url => request(url));
     let result = await Promise.all(promises).then((response)=>{
         return response.map(res=>JSON.parse(res))
     }).then((transactions) => {
@@ -53,16 +52,6 @@ const getTransactions = async (req,res) => {
     return result;
 }
 
-const transformTransactions = async (req,res) => {
-    let getTransaction = await getTransactions();
-    let postTransaction = await postTransactions(getTransaction);
-    res.status(200).json({
-        status: 1,
-        message: 'success',
-        'transaction' : getTransaction,
-        data : postTransaction
-    });
-}
 const postTransactions = (transactions) => {
 
     return new Promise((resolve, reject) => {
@@ -78,8 +67,18 @@ const postTransactions = (transactions) => {
     });
 }
 
+const transformTransactions = async (req,res) => {
+
+    let getTransaction = await getTransactions();
+    let postTransaction = await postTransactions(getTransaction);
+    res.status(200).json({
+        status: 1,
+        message: 'success',
+        'transaction' : getTransaction,
+        data : postTransaction
+    });
+}
+
 module.exports = {
-    getExchangeRates,
-    getTransactions,
     transformTransactions,
 }
